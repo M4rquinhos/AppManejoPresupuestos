@@ -57,5 +57,11 @@ namespace AppManejoPresupuestos.Servicios
                                       TipoCuentaId = @tipoCuentaId
                                       WHERE IdCuenta = @idCuenta;", cuenta);
         }
+
+        public async Task Borrar(int idCuenta)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            await connection.ExecuteAsync(@"DELETE Cuentas WHERE IdCuenta = @idCuenta", new { idCuenta });
+        }
     }
 }

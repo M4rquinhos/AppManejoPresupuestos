@@ -25,7 +25,7 @@ namespace AppManejoPresupuestos.Controllers
             _repositorioTiposCuentas = repositorioTiposCuentas;
             _servicioUsuarios = servicioUsuarios;
             _repositorioCuentas = repositorioCuentas;
-            this.mapper = mapper;
+            _mapper = mapper;
         }
 
         public async Task<IActionResult> Index()
@@ -111,6 +111,35 @@ namespace AppManejoPresupuestos.Controllers
             }
 
             await _repositorioCuentas.Actualizar(cuentaEditar);
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Borrar(int Id)
+        {
+            var usuarioId = _servicioUsuarios.ObtenerUsuarioId();
+            var cuenta = await _repositorioCuentas.ObtenerPorId(Id, usuarioId);
+
+            if (cuenta is null)
+            {
+                return RedirectToAction("NoEncontrado", "Home");
+            }
+
+            return View(cuenta);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> BorrarCuenta(int IdCuenta)
+        {
+            var usuarioId = _servicioUsuarios.ObtenerUsuarioId();
+            var cuenta = await _repositorioCuentas.ObtenerPorId(IdCuenta, usuarioId);
+
+            if (cuenta is null)
+            {
+                return RedirectToAction("NoEncontrado", "Home");
+            }
+
+            await _repositorioCuentas.Borrar(IdCuenta);
             return RedirectToAction("Index");
         }
 
